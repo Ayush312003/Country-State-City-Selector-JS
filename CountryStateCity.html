@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Country State City</title>
+      <!-- Some CSS -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+      
+      <style>
+         .form_container{
+         border:1px solid grey;
+         background-color: #F8F9F9;
+         margin: 5%;
+         padding: 2%;
+         border-radius: 3px;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container" style="width:900px; margin-left: 25%;">
+         <div class="form_container">
+            <h2 align="center">Country State City Dropdown</h2>
+            <br />  
+            <div ng-app="myapp" >
+               <select name="country" id="country" class="form-control" onchange="statecity(this.value,0)">
+                  <option value=""> Select country</option>
+                  
+               </select>
+               <br/>
+               <select name="state" id="state" class="form-control"  onchange="statecity(this.value,1)">
+                  <option value=""> Select state</option>
+               </select>
+
+               <br/>
+               <select name="city" id="city"  class="form-control" >
+                  <option value=""> Select city</option>
+                  
+               </select>
+            </div>
+         </div>
+      </div>
+      </div>   
+      <script>
+          let result1,result2,result3,y=""; var iso;
+          let x="";
+         var headers = new Headers();
+headers.append("X-CSCAPI-KEY", "dFlEVzJBbW9RT3dUc3QwR29FM29Rc0JtTUllQTJHM1lOVmNQbG5aTA==");
+
+var requestOptions = {
+method: 'GET',
+headers: headers,
+redirect: 'follow'
+};
+
+fetch("https://api.countrystatecity.in/v1/countries", requestOptions)
+.then(response => response.text())
+.then(result => iterate(result)) 
+.catch(error => console.log('error', error));
+
+
+
+function iterate(result){
+   result1 = JSON.parse(result)
+   select=document.getElementById('country');
+   for(var i =0;i<result1.length;i++){
+      var opt = document.createElement('option');
+    opt.value = result1[i]['iso2'];
+    opt.innerHTML = result1[i]['name'];
+    select.appendChild(opt);
+   }
+}
+
+//Code for States start from below
+
+function statecity(value,selector)
+{
+console.log(value);
+if(selector===0)
+{
+   var headers1 = new Headers();
+headers1.append("X-CSCAPI-KEY", "dFlEVzJBbW9RT3dUc3QwR29FM29Rc0JtTUllQTJHM1lOVmNQbG5aTA==");
+
+var requestOptions = {
+  method: 'GET',
+  headers: headers1,
+  redirect: 'follow'
+};
+   x=x.concat("https://api.countrystatecity.in/v1/countries/");
+   x=x.concat(value);
+x=x.concat("/states");
+console.log(x);
+fetch(x, requestOptions)
+  .then(response => response.text())
+  .then(result => iterate1(result)) 
+.catch(error => console.log('error', error));
+
+
+
+function iterate1(result){
+   
+   result3 = JSON.parse(result)
+   select=document.getElementById('state');
+   for(var i =0;i<result3.length;i++){
+      var opt = document.createElement('option');
+    opt.value = result3[i]['iso2'];
+    opt.innerHTML = result3[i]['name'];
+    select.appendChild(opt);
+   }
+}
+}
+// Code for City starts below
+
+if(selector===1)
+{
+
+   var headers2 = new Headers();
+headers2.append("X-CSCAPI-KEY", "dFlEVzJBbW9RT3dUc3QwR29FM29Rc0JtTUllQTJHM1lOVmNQbG5aTA==");
+
+var requestOptions = {
+  method: 'GET',
+  headers: headers2,
+  redirect: 'follow'
+};
+
+   y=y.concat(x);
+   y=y.concat("/");
+
+   y=y.concat(value);
+   y=y.concat("/cities");
+   console.log(y);
+
+   fetch(y, requestOptions)
+   .then(response => response.text())
+  .then(result => iterate2(result))
+  .catch(error => console.log('error', error));
+
+   function iterate2(result){
+
+      result2 = JSON.parse(result)
+   select=document.getElementById('city');
+   for(var i =0;i<result2.length;i++){
+      var opt = document.createElement('option');
+    opt.value = result2[i]['state_code'];
+    opt.innerHTML = result2[i]['name'];
+    select.appendChild(opt);
+
+}  
+}
+}
+} 
+
+
+</script>
+   </body>
+</html>
